@@ -7,33 +7,34 @@ Deal or No Deal?
 11/29/2020
 it should be loop that iterates 10 times
 each time it asks the user to enter the number and then store the number from amount_list and the case number in dict
-3,5,7,and 9th iteration it asks accept the deal. The deal is calculated the sum of all values - the sum of values picked/ the quatity of unpicked values
+3,5,7,and 9th iteration it asks accept the deal. The deal is calculated: 
+(the sum of all values - the sum of values picked)/the quality of unpicked values
 the game ends when uer picks deal then it shows the case value that the user could won
 otherwise the user see the 9th case and the 10th
 '''
 amount_list = [1, 100, 500, 1000, 10000, 25000, 100000, 250000, 500000, 1000000]
 all_sum = sum(amount_list)
-cases = {}
-random.shuffle(amount_list)
+cases = {}  # this dict is used for all picked numbers and their indexes from amount_list
+random.shuffle(amount_list)  # shuffled list
 
 
 def input_valid():
     # this function validates the input
     while True:
-        inp = input('Enter your number:')
-        try:
+        inp = input('Enter your number:')  # ask the user for input
+        try:  # try if its integer
             inp = int(inp)
-        except ValueError:
+        except ValueError:  # if not numeric rise error
             print('Please use numeric digits.')
-            continue
-        if inp < 0 or inp > 9:
+            continue  # skip it
+        if inp < 0 or inp > 9:  # if in the index range
             print('Please enter number in the scope.')
-            continue
-        elif inp in cases:
+            continue # skip it
+        elif inp in cases: # if already picked
             print("Please use the new number in the range")
             print("You already used ", list(cases.keys()))
-            continue
-        break
+            continue  # skip it
+        break  # if the number passed all validation checks
     return inp
 
 
@@ -42,7 +43,7 @@ def deal():
     quantity = len(amount_list) - len(cases)
     result = (all_sum - sum(cases.values())) / quantity
     print(str(result) + " = (" + str(all_sum) + " - " + str(sum(cases.values())) + ") / " + str(quantity))
-    return result
+    return "$"+"{:.2f}".format(result)
 
 
 def interface():
@@ -66,13 +67,20 @@ def ask_ok(prompt, retries=4, reminder="Please try again"):
         print(reminder)
 
 
+def final_output(out, value):
+    if out:
+        print("User could won ", value)
+        print("The User won", deal())
+    else:
+        print("The User won", value)
+
+
 def game():
     print("this is sorted list", amount_list)
     flag = False
     print()
     for i in range(1, 10):
-        print("this is the new case dictionary ", cases)
-        print("i = ", i)
+        print("counter = ", i)
         case_value = interface()
         print("this is the new case dictionary after add", cases)
         if i == 3 or i == 5 or i == 7 or i == 9:
@@ -80,11 +88,7 @@ def game():
             if ask_ok("Do you want to accept the deal?"):
                 flag = True
                 break
-    if flag:
-        print("User could won ", case_value)
-        print("The User won", deal())
-    else:
-        print("The User won", case_value)
+    final_output(flag, case_value)
 
 
 game()
